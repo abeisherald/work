@@ -137,6 +137,10 @@ for state in list_of_states:
         dict_of_combos[state].append(context_str)     
         full_combo = {**context_ui, **context_wh, **context_str}
         dict_of_combos[state].append(full_combo)
+    
+    else:
+        print(f'{state} not templated')
+
 
 for state in list_of_states:
     if '3' in dict_of_combos[state] and '4' in dict_of_combos[state]:
@@ -236,6 +240,3 @@ for state in list_of_states:
             with DocxTemplate('ADP_template.docx') as fulldoc:
                 fulldoc.render(context_ui)
                 fulldoc.save(f'ADP_{state}.docx')
-
-    else:
-        print(f'{state} not templated')
