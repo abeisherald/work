@@ -3,56 +3,7 @@ from docxtpl import DocxTemplate
 import csv
 
 
-list_of_states = ['Alabama / Remote Seller',
-                'Alabama / Physical Presence',
-                'Alaska / Remote Seller',
-                'Arizona',
-                'Arkansas',
-                'California',
-                'Colorado',
-                'Connecticut',
-                'Delaware',
-                'Florida',
-                'Georgia',
-                'Hawaii',
-                'Idaho',
-                'Illinois',
-                'Indiana',
-                'Iowa',
-                'Kansas',
-                'Kentucky',
-                'Louisiana / Remote Seller',
-                'Louisiana / Physical Presence',
-                'Maine',
-                'Maryland',
-                'Massachusetts',
-                'Michigan',
-                'Minnesota',
-                'Mississippi',
-                'Missouri',
-                'Montana',
-                'Nebraska',
-                'Nevada',
-                'New Hampshire',
-                'New Jersey',
-                'New Mexico',
-                'New York',
-                'North Carolina',
-                'North Dakota',
-                'Ohio',
-                'Oklahoma',
-                'Oregon',
-                'Pennsylvania',
-                'Rhode Island',
-                'South Carolina',
-                'South Dakota',
-                'Tennessee',
-                'Texas',
-                'Utah',
-                'Vermont',
-                'Virginia',
-                'Washington',
-                'West Virginia',
+list_of_states = ['Maine',
                 'Wisconsin',
                 'Wyoming']
 
@@ -97,7 +48,11 @@ with open('stid.csv', 'r') as csv_file:
             dict_of_combos[state].append('0')
 
 for state in list_of_states:
-    if input(f'Do you want to skip this state? {state}  |   y/n:') == 'n':
+    user_input = input(f'Do you want to skip this state? {state}  |   y/n:')
+    if user_input == 'n':
+        context_str = {}
+        context_ui = {}
+        context_wh = {}
         if '3' in dict_of_combos[state] and '4' in dict_of_combos[state]:
             context_ui = {'department_ui' : input(f'UI: Department for {state}:'),
                 'state_ui' : state,
@@ -137,106 +92,117 @@ for state in list_of_states:
         dict_of_combos[state].append(context_str)     
         full_combo = {**context_ui, **context_wh, **context_str}
         dict_of_combos[state].append(full_combo)
+        print(dict_of_combos)
     
-    else:
+    elif user_input == 'y':
         print(f'{state} not templated')
+        dict_of_combos[state].append(context_ui)
+        dict_of_combos[state].append(context_wh)
+        dict_of_combos[state].append(context_str)     
+        full_combo = {**context_ui, **context_wh, **context_str}
+        dict_of_combos[state].append(full_combo)
+    else:
+        print('please enter y or n')
 
 
 for state in list_of_states:
     if '3' in dict_of_combos[state] and '4' in dict_of_combos[state]:
         # 6 = get immediate ui 7 = get immediate wh
         if '6' in dict_of_combos[state] or '7' in dict_of_combos[state]:
-            with DocxTemplate('FULL_imme_template.docx') as fulldoc:
-                fulldoc.render(full_combo)
-                fulldoc.save(f'FULL_{state}.docx')
-            with DocxTemplate('ADP_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'ADP_{state}.docx')
-            with DocxTemplate('WHUI_imme_template.docx') as fulldoc:
-                fulldoc.render(context_str)
-                fulldoc.save(f'WHUI_{state}.docx')
+            fulldoc = DocxTemplate('FULL_imme_template.docx')
+            fulldoc.render(dict_of_combos[state][6])
+            fulldoc.save(f'FULL_{state}.docx')
+            fulldoc = DocxTemplate('ADP_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'ADP_{state}.docx')
+            fulldoc = DocxTemplate('WHUI_imme_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'WHUI_{state}.docx')
 
 
         else:
-            with DocxTemplate('FULL_nonim_template.docx') as fulldoc:
-                fulldoc.render(full_combo)
-                fulldoc.save(f'FULL_{state}.docx')
-            with DocxTemplate('ADP_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'ADP_{state}.docx')
-            with DocxTemplate('WHUI_nonim_template.docx') as fulldoc:
-                fulldoc.render(context_str)
-                fulldoc.save(f'WHUI_{state}.docx')
+            fulldoc = DocxTemplate('FULL_nonim_template.docx')
+            fulldoc.render(dict_of_combos[state][6])
+            fulldoc.save(f'FULL_{state}.docx')
+            fulldoc = DocxTemplate('ADP_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'ADP_{state}.docx')
+            fulldoc = DocxTemplate('WHUI_nonim_template.docx')
+            fulldoc.render(dict_of_combos[state][6])
+            fulldoc.save(f'WHUI_{state}.docx')
 
     elif ('1' in dict_of_combos[state] and '4' in dict_of_combos[state]) or ('1' in dict_of_combos[state] and '5' in dict_of_combos[state]):
         if '6' in dict_of_combos[state] and '7' in dict_of_combos[state]:
-            with DocxTemplate('UI_imme_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'UI_{state}.docx')
-            with DocxTemplate('ADP_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'ADP_{state}.docx')
-            with DocxTemplate('WH_imme_template.docx') as fulldoc:
-                fulldoc.render(context_wh)
-                fulldoc.save(f'WH_{state}.docx')
-            with DocxTemplate('WHUI_imme_template.docx') as fulldoc:
-                fulldoc.render(context_str)
-                fulldoc.save(f'WHUI_{state}.docx')
+            fulldoc = DocxTemplate('UI_imme_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'UI_{state}.docx')
+            fulldoc = DocxTemplate('ADP_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'ADP_{state}.docx')
+            fulldoc = DocxTemplate('WH_imme_template.docx')
+            fulldoc.render(dict_of_combos[state][4])
+            fulldoc.save(f'WH_{state}.docx')
+            fulldoc = DocxTemplate('WHUI_imme_template.docx')
+            fulldoc.render(dict_of_combos[state][6])
+            fulldoc.save(f'WHUI_{state}.docx')
         
         elif '6' in dict_of_combos[state] and not '7' in dict_of_combos[state]:
-            with DocxTemplate('UI_imme_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'UI_{state}.docx')
-            with DocxTemplate('ADP_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'ADP_{state}.docx')
-            with DocxTemplate('WH_nonim_template.docx') as fulldoc:
-                fulldoc.render(context_wh)
-                fulldoc.save(f'WH_{state}.docx')
-            with DocxTemplate('WHUI_nonim_template.docx') as fulldoc:
-                fulldoc.render(context_str)
-                fulldoc.save(f'WHUI_{state}.docx')
+            fulldoc = DocxTemplate('UI_imme_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'UI_{state}.docx')
+            fulldoc = DocxTemplate('ADP_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'ADP_{state}.docx')
+            fulldoc = DocxTemplate('WH_nonim_template.docx')
+            fulldoc.render(dict_of_combos[state][4])
+            fulldoc.save(f'WH_{state}.docx')
+            fulldoc = DocxTemplate('WHUI_nonim_template.docx')
+            fulldoc.render(dict_of_combos[state][6])
+            fulldoc.save(f'WHUI_{state}.docx')
         
         elif '7' in dict_of_combos[state] and not '6' in dict_of_combos[state]:
-            with DocxTemplate('UI_nonim_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'UI_{state}.docx')
-            with DocxTemplate('ADP_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'ADP_{state}.docx')
-            with DocxTemplate('WH_imme_template.docx') as fulldoc:
-                fulldoc.render(context_wh)
-                fulldoc.save(f'WH_{state}.docx')
-            with DocxTemplate('WHUI_nonim_template.docx') as fulldoc:
-                fulldoc.render(context_str)
-                fulldoc.save(f'WHUI_{state}.docx')
+            fulldoc = DocxTemplate('UI_nonim_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'UI_{state}.docx')
+            fulldoc = DocxTemplate('ADP_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'ADP_{state}.docx')
+            fulldoc = DocxTemplate('WH_imme_template.docx')
+            fulldoc.render(dict_of_combos[state][4])
+            fulldoc.save(f'WH_{state}.docx')
+            fulldoc = DocxTemplate('WHUI_nonim_template.docx')
+            fulldoc.render(dict_of_combos[state][6])
+            fulldoc.save(f'WHUI_{state}.docx')
         
         else:
-            with DocxTemplate('UI_nonim_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'UI_{state}.docx')
-            with DocxTemplate('ADP_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'ADP_{state}.docx')
-            with DocxTemplate('WH_nonim_template.docx') as fulldoc:
-                fulldoc.render(context_wh)
-                fulldoc.save(f'WH_{state}.docx')
-            with DocxTemplate('WHUI_nonim_template.docx') as fulldoc:
-                fulldoc.render(context_str)
-                fulldoc.save(f'WHUI_{state}.docx')
+            fulldoc = DocxTemplate('UI_nonim_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'UI_{state}.docx')
+            fulldoc = DocxTemplate('ADP_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'ADP_{state}.docx')
+            fulldoc = DocxTemplate('WH_nonim_template.docx')
+            fulldoc.render(dict_of_combos[state][4])
+            fulldoc.save(f'WH_{state}.docx')
+            wfulldoc =DocxTemplate('WHUI_nonim_template.docx')
+            fulldoc.render(dict_of_combos[state][6])
+            fulldoc.save(f'WHUI_{state}.docx')
 
     elif '2' in dict_of_combos[state]:
         if '6' in dict_of_combos[state] or '7' in dict_of_combos[state]:
-            with DocxTemplate('WHUI_imme_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'UI_{state}.docx')
-            with DocxTemplate('ADP_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'ADP_{state}.docx')
+            fulldoc = DocxTemplate('WHUI_imme_template.docx')
+            fulldoc.render(dict_of_combos[state][6])
+            fulldoc.save(f'WHUI_{state}.docx')
+            fulldoc = DocxTemplate('ADP_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'ADP_{state}.docx')
         else:
-            with DocxTemplate('WHUI_nonim_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'UI_{state}.docx')
-            with DocxTemplate('ADP_template.docx') as fulldoc:
-                fulldoc.render(context_ui)
-                fulldoc.save(f'ADP_{state}.docx')
+            fulldoc = DocxTemplate('WHUI_nonim_template.docx')
+            fulldoc.render(dict_of_combos[state][6])
+            fulldoc.save(f'WHUI_{state}.docx')
+            fulldoc = DocxTemplate('ADP_template.docx')
+            fulldoc.render(dict_of_combos[state][3])
+            fulldoc.save(f'ADP_{state}.docx')
+
+    else:
+        print(f'{state} failed to template.')
