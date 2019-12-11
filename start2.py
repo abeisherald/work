@@ -96,17 +96,15 @@ for state in list_of_states:
     
     elif user_input == 'y':
         print(f'{state} not templated')
-        dict_of_combos[state].append(context_ui)
-        dict_of_combos[state].append(context_wh)
-        dict_of_combos[state].append(context_str)     
-        full_combo = {**context_ui, **context_wh, **context_str}
-        dict_of_combos[state].append(full_combo)
+        dict_of_combos[state].append('skip')
     else:
         print('please enter y or n')
 
 
 for state in list_of_states:
-    if '3' in dict_of_combos[state] and '4' in dict_of_combos[state]:
+    if 'skip' in dict_of_combos[state]:
+        continue
+    elif '3' in dict_of_combos[state] and '4' in dict_of_combos[state]:
         # 6 = get immediate ui 7 = get immediate wh
         if '6' in dict_of_combos[state] or '7' in dict_of_combos[state]:
             fulldoc = DocxTemplate('FULL_imme_template.docx')
