@@ -15,19 +15,19 @@ with open('stid.csv', 'r') as csv_file:
     data_csv = list(csv.DictReader(csv_file)) 
     
     for state in list_of_states:
-        if [row ['State'] for row in data_csv if row['Unemployment'] == 'Seperate Unemployment Registration']:
+        if state == [row ['State'] for row in data_csv if row['Unemployment'] == 'Seperate Unemployment Registration']:
             dict_of_combos[state].append('sep_ui')
-        elif [row ['State'] for row in data_csv if row['Unemployment'] == 'On Withholding Registration']:
+        elif state == [row ['State'] for row in data_csv if row['Unemployment'] == 'On Withholding Registration']:
             dict_of_combos[state].append('ui_with_wh')
-        elif [row ['State'] for row in data_csv if row['Unemployment'] == 'On Sales Tax Registration']:
+        elif state == [row ['State'] for row in data_csv if row['Unemployment'] == 'On Sales Tax Registration']:
             dict_of_combos[state].append('ui_with_str')
-        elif [row ['State'] for row in data_csv if row['Withholding'] == 'On Sales Tax Registration']:
+        elif state == [row ['State'] for row in data_csv if row['Withholding'] == 'On Sales Tax Registration']:
             dict_of_combos[state].append('wh_with_str')
-        elif [row ['State'] for row in data_csv if row['Withholding'] == 'Seperate Withholding Registration']:
+        elif state == [row ['State'] for row in data_csv if row['Withholding'] == 'Seperate Withholding Registration']:
             dict_of_combos[state].append('sep_wh')
-        elif [row ['State'] for row in data_csv if row['Do we currently get the UIID at the time of registration?'] == 'Yes']:
+        elif state == [row ['State'] for row in data_csv if row['Do we currently get the UIID at the time of registration?'] == 'Yes']:
             dict_of_combos[state].append('immediate_ui')
-        elif [row ['State'] for row in data_csv if row['Do we currently get the WHID at the time of registration?'] == 'Yes']:
+        elif state == [row ['State'] for row in data_csv if row['Do we currently get the WHID at the time of registration?'] == 'Yes']:
             dict_of_combos[state].append('immediate_wh')
         else:
             dict_of_combos[state].append('none')
