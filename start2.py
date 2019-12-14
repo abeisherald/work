@@ -3,7 +3,8 @@ from docxtpl import DocxTemplate
 import csv
 
 
-list_of_states = ['Maine',
+list_of_states = ['New York',
+                'Maine',
                 'Wisconsin',
                 'Wyoming']
 
@@ -11,26 +12,27 @@ list_of_states = ['Maine',
 dict_of_combos = {state: [] for state in list_of_states}
 
 
+def reg_indx(state, row_columnx, row_columnx_filter, dict_append):
+    if state in [row ['State'] for row in data_csv if row[row_columnx] == row_columnx_filter]:
+            dict_of_combos[state].append(dict_append)
+    else:
+        dict_of_combos[state].append('none')
+
+
 with open('stid.csv', 'r') as csv_file:
     data_csv = list(csv.DictReader(csv_file)) 
     
     for state in list_of_states:
-        if state == [row ['State'] for row in data_csv if row['Unemployment'] == 'Seperate Unemployment Registration']:
-            dict_of_combos[state].append('sep_ui')
-        elif state == [row ['State'] for row in data_csv if row['Unemployment'] == 'On Withholding Registration']:
-            dict_of_combos[state].append('ui_with_wh')
-        elif state == [row ['State'] for row in data_csv if row['Unemployment'] == 'On Sales Tax Registration']:
-            dict_of_combos[state].append('ui_with_str')
-        elif state == [row ['State'] for row in data_csv if row['Withholding'] == 'On Sales Tax Registration']:
-            dict_of_combos[state].append('wh_with_str')
-        elif state == [row ['State'] for row in data_csv if row['Withholding'] == 'Seperate Withholding Registration']:
-            dict_of_combos[state].append('sep_wh')
-        elif state == [row ['State'] for row in data_csv if row['Do we currently get the UIID at the time of registration?'] == 'Yes']:
-            dict_of_combos[state].append('immediate_ui')
-        elif state == [row ['State'] for row in data_csv if row['Do we currently get the WHID at the time of registration?'] == 'Yes']:
-            dict_of_combos[state].append('immediate_wh')
-        else:
-            dict_of_combos[state].append('none')
+
+        reg_indx(state, 'Unemployment', 'Seperate Unemployment Registration', 'sep_ui')
+        reg_indx(state, 'Unemployment', 'On Withholding Registration', 'ui_with_wh')
+        reg_indx(state, 'Unemployment', 'On Sales Tax Registration', 'ui_with_str')
+        reg_indx(state, 'Withholding', 'On Sales Tax Registration', 'sep_wh')
+        reg_indx(state, 'Withholding', 'Seperate Withholding Registration', 'wh_with_str')
+        reg_indx(state, 'Do we currently get the UIID at the time of registration?', 'Yes', 'immediate_ui')
+        reg_indx(state, 'Do we currently get the WHID at the time of registration?', 'Yes', 'immediate_wh')
+        
+    print(dict_of_combos)
 
 for state in list_of_states:
     user_input = input(f'Do you want to skip this state? {state}  |   y/n:')
@@ -90,54 +92,54 @@ def templatee(state, inputfile, outputfile):
 
 
 for state in list_of_states:
-    context = dict_of_combos[state][3] # 3 is index 3 of the context list we created up above
+    context = dict_of_combos[state][7] # 7 is index 7 of the context list we created up above
     if 'skip' in dict_of_combos[state]:
         continue
     elif 'ui_with_str' in dict_of_combos[state] and 'wh_with_str' in dict_of_combos[state]:
         if 'immediate_ui' in dict_of_combos[state] or 'immediate_wh' in dict_of_combos[state]:
-            self.templatee(state, 'FULL_imme', 'FULL')
-            self.templatee(state, 'ADP', 'ADP')
-            self.templatee(state, 'WHUI_imme', 'WHUI')
+            templatee(state, 'FULL_imme', 'FULL')
+            templatee(state, 'ADP', 'ADP')
+            templatee(state, 'WHUI_imme', 'WHUI')
 
         else:
-            self.templatee(state, 'FULL_nonim', 'FULL')
-            self.templatee(state, 'ADP', 'ADP')
-            self.templatee(state, 'WHUI_nonim', 'WHUI')
+            templatee(state, 'FULL_nonim', 'FULL')
+            templatee(state, 'ADP', 'ADP')
+            templatee(state, 'WHUI_nonim', 'WHUI')
 
     elif ('sep_ui' in dict_of_combos[state] and 'wh_with_str' in dict_of_combos[state]) or ('sep_ui' in dict_of_combos[state] and 'sep_wh' in dict_of_combos[state]):
         if 'immediate_ui' in dict_of_combos[state] and 'immediate_wh' in dict_of_combos[state]:
-            self.templatee(state, 'UI_imme', 'UI')
-            self.templatee(state, 'ADP', 'ADP')
-            self.templatee(state, 'WH_imme', 'WH')
-            self.templatee(state, 'WHUI_imme', 'WHUI')
+            templatee(state, 'UI_imme', 'UI')
+            templatee(state, 'ADP', 'ADP')
+            templatee(state, 'WH_imme', 'WH')
+            templatee(state, 'WHUI_imme', 'WHUI')
 
         
         elif 'immediate_ui' in dict_of_combos[state] and not 'immediate_wh' in dict_of_combos[state]:
-            self.templatee(state, 'UI_imme', 'UI')
-            self.templatee(state, 'ADP', 'ADP')
-            self.templatee(state, 'WH_nonim', 'WH')
-            self.templatee(state, 'WHUI_nonim', 'WHUI')
+            templatee(state, 'UI_imme', 'UI')
+            templatee(state, 'ADP', 'ADP')
+            templatee(state, 'WH_nonim', 'WH')
+            templatee(state, 'WHUI_nonim', 'WHUI')
             
         
         elif 'immediate_wh' in dict_of_combos[state] and not 'immediate_ui' in dict_of_combos[state]:
-            self.templatee(state, 'UI_nonim', 'UI')
-            self.templatee(state, 'ADP', 'ADP')
-            self.templatee(state, 'WH_imme', 'WH')
-            self.templatee(state, 'WHUI_nonim', 'WHUI')
+            templatee(state, 'UI_nonim', 'UI')
+            templatee(state, 'ADP', 'ADP')
+            templatee(state, 'WH_imme', 'WH')
+            templatee(state, 'WHUI_nonim', 'WHUI')
         
         else:
-            self.templatee(state, 'UI_nonim', 'UI')
-            self.templatee(state, 'ADP', 'ADP')
-            self.templatee(state, 'WH_nonim', 'WH')
-            self.templatee(state, 'WHUI_nonim', 'WHUI')
+            templatee(state, 'UI_nonim', 'UI')
+            templatee(state, 'ADP', 'ADP')
+            templatee(state, 'WH_nonim', 'WH')
+            templatee(state, 'WHUI_nonim', 'WHUI')
 
     elif 'ui_with_wh' in dict_of_combos[state]:
         if 'immediate_ui' in dict_of_combos[state] or 'immediate_wh' in dict_of_combos[state]:
-            self.templatee(state, 'WHUI_imme', 'WHUI')
-            self.templatee(state, 'ADP', 'ADP')
+            templatee(state, 'WHUI_imme', 'WHUI')
+            templatee(state, 'ADP', 'ADP')
         else:
-            self.templatee(state, 'WHUI_nonim', 'WHUI')
-            self.templatee(state, 'ADP', 'ADP')
+            templatee(state, 'WHUI_nonim', 'WHUI')
+            templatee(state, 'ADP', 'ADP')
 
     else:
         print(f'{state} failed to template.')
