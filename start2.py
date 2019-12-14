@@ -12,9 +12,9 @@ list_of_states = ['New York',
 dict_of_combos = {state: [] for state in list_of_states}
 
 
-def reg_indx(state, row_columnx, row_columnx_filter, dict_append):
+def reg_indx(data_source, state, row_columnx, row_columnx_filter, dict_append):
     if state in [row ['State'] for row in data_csv if row[row_columnx] == row_columnx_filter]:
-            dict_of_combos[state].append(dict_append)
+        dict_of_combos[state].append(dict_append)
     else:
         dict_of_combos[state].append('none')
 
@@ -24,13 +24,13 @@ with open('stid.csv', 'r') as csv_file:
     
     for state in list_of_states:
 
-        reg_indx(state, 'Unemployment', 'Seperate Unemployment Registration', 'sep_ui')
-        reg_indx(state, 'Unemployment', 'On Withholding Registration', 'ui_with_wh')
-        reg_indx(state, 'Unemployment', 'On Sales Tax Registration', 'ui_with_str')
-        reg_indx(state, 'Withholding', 'On Sales Tax Registration', 'sep_wh')
-        reg_indx(state, 'Withholding', 'Seperate Withholding Registration', 'wh_with_str')
-        reg_indx(state, 'Do we currently get the UIID at the time of registration?', 'Yes', 'immediate_ui')
-        reg_indx(state, 'Do we currently get the WHID at the time of registration?', 'Yes', 'immediate_wh')
+        reg_indx(data_csv, state, 'Unemployment', 'Seperate Unemployment Registration', 'sep_ui')
+        reg_indx(data_csv, state, 'Unemployment', 'On Withholding Registration', 'ui_with_wh')
+        reg_indx(data_csv, state, 'Unemployment', 'On Sales Tax Registration', 'ui_with_str')
+        reg_indx(data_csv, state, 'Withholding', 'On Sales Tax Registration', 'sep_wh')
+        reg_indx(data_csv, state, 'Withholding', 'Seperate Withholding Registration', 'wh_with_str')
+        reg_indx(data_csv, state, 'Do we currently get the UIID at the time of registration?', 'Yes', 'immediate_ui')
+        reg_indx(data_csv, state, 'Do we currently get the WHID at the time of registration?', 'Yes', 'immediate_wh')
         
     print(dict_of_combos)
 
@@ -92,7 +92,7 @@ def templatee(state, inputfile, outputfile):
 
 
 for state in list_of_states:
-    context = dict_of_combos[state][7] # 7 is index 7 of the context list we created up above
+    context = dict_of_combos[state][7] # 7 is index of the context objects we created up above
     if 'skip' in dict_of_combos[state]:
         continue
     elif 'ui_with_str' in dict_of_combos[state] and 'wh_with_str' in dict_of_combos[state]:
